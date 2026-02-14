@@ -26,6 +26,8 @@ import SqlTutorial from "./pages/SqlTutorial";
 import SqlChapter from "./pages/SqlChapter";
 import FlaskTutorial from "./pages/FlaskTutorial";
 import FlaskChapter from "./pages/FlaskChapter";
+import DjangoTutorial from "./pages/DjangoTutorial";
+import DjangoChapter from "./pages/DjangoChapter";
 import Compiler from "./pages/Compiler";
 import NotFound from "./pages/NotFound";
 
@@ -60,6 +62,8 @@ const App = () => (
               <Route path="/sql/:slug" element={<SqlChapter />} />
               <Route path="/flask" element={<FlaskTutorial />} />
               <Route path="/flask/:slug" element={<FlaskChapter />} />
+              <Route path="/django" element={<DjangoTutorial />} />
+              <Route path="/django/:slug" element={<DjangoChapter />} />
               <Route path="/compiler" element={<Compiler />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

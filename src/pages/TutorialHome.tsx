@@ -3,7 +3,7 @@ import { BookOpen, Code, Search, TrendingUp, Users, Award } from "lucide-react";
 
 const tutorials = [
     {
-        title: "Python",
+        title: "Python Tutorial",
         description:
             "Learn Python programming from scratch — variables, loops, functions, OOP, file handling, and more.",
         icon: "🐍",
@@ -16,7 +16,7 @@ const tutorials = [
         level: "Beginner to Advanced",
     },
     {
-        title: "Java",
+        title: "Java Tutorial",
         description:
             "Master Java fundamentals — data types, control flow, OOP concepts, collections, and exception handling.",
         icon: "☕",
@@ -29,7 +29,7 @@ const tutorials = [
         level: "Beginner to Advanced",
     },
     {
-        title: "JavaScript",
+        title: "JavaScript Tutorial",
         description:
             "Build interactive web experiences — ES6+, DOM manipulation, async/await, closures, and more.",
         icon: "⚡",
@@ -40,10 +40,9 @@ const tutorials = [
         link: "/javascript",
         topics: 35,
         level: "Beginner to Advanced",
-        comingSoon: true,
     },
     {
-        title: "Linux",
+        title: "Linux Tutorial",
         description:
             "Master the command line — file system, permissions, shell scripting, networking, and system administration.",
         icon: "🐧",
@@ -56,7 +55,7 @@ const tutorials = [
         level: "Beginner to Advanced",
     },
     {
-        title: "C Programming",
+        title: "C Programming Tutorial",
         description:
             "Understand the foundation of programming — pointers, memory management, structures, and algorithms.",
         icon: "⚙️",
@@ -69,7 +68,7 @@ const tutorials = [
         level: "Beginner to Advanced",
     },
     {
-        title: "C++",
+        title: "C++ Tutorial",
         description:
             "Level up with C++ — classes, templates, STL, polymorphism, and competitive programming basics.",
         icon: "🚀",
@@ -82,7 +81,7 @@ const tutorials = [
         level: "Intermediate to Advanced",
     },
     {
-        title: "SQL & Databases",
+        title: "SQL Tutorial",
         description:
             "Master database management — SQL queries, joins, normalization, and NoSQL basics.",
         icon: "🗄️",
@@ -95,7 +94,7 @@ const tutorials = [
         level: "Beginner to Advanced",
     },
     {
-        title: "Flask Web Dev",
+        title: "Flask Tutorial",
         description:
             "Build robust web applications with Python and Flask — routing, templates, and database integration.",
         icon: "🌶️",
@@ -106,6 +105,19 @@ const tutorials = [
         link: "/flask",
         topics: 12,
         level: "Beginner to Intermediate",
+    },
+    {
+        title: "Django Tutorial",
+        description:
+            "Build secure and scalable web applications with Python and Django. Master MVT, ORM, Auth, and REST APIs.",
+        icon: "🌐",
+        color: "from-green-700 to-emerald-900",
+        bgLight: "bg-green-50",
+        borderColor: "border-green-200",
+        hoverShadow: "hover:shadow-green-200/50",
+        link: "/django",
+        topics: 22,
+        level: "Intermediate to Advanced",
     },
 ];
 
@@ -221,11 +233,6 @@ const TutorialHome = () => {
                                     <div>
                                         <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                                             {tutorial.title}
-                                            {tutorial.comingSoon && (
-                                                <span className="text-xs font-medium bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
-                                                    Coming Soon
-                                                </span>
-                                            )}
                                         </h3>
                                         <p className="text-sm text-gray-500 mt-0.5">
                                             {tutorial.level}
@@ -245,18 +252,12 @@ const TutorialHome = () => {
                                         {tutorial.topics} Chapters
                                     </span>
 
-                                    {tutorial.comingSoon ? (
-                                        <span className="text-sm font-semibold text-gray-400 cursor-not-allowed">
-                                            Coming Soon →
-                                        </span>
-                                    ) : (
-                                        <Link
-                                            to={tutorial.link}
-                                            className={`text-sm font-semibold bg-gradient-to-r ${tutorial.color} bg-clip-text text-transparent hover:opacity-80 transition-opacity`}
-                                        >
-                                            Start Learning →
-                                        </Link>
-                                    )}
+                                    <Link
+                                        to={tutorial.link}
+                                        className={`text-sm font-semibold bg-gradient-to-r ${tutorial.color} bg-clip-text text-transparent hover:opacity-80 transition-opacity`}
+                                    >
+                                        Start Learning →
+                                    </Link>
                                 </div>
                             </div>
                         </div>
