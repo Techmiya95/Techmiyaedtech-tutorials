@@ -1,7 +1,22 @@
-import { Link } from "react-router-dom";
-import { BookOpen, Code, Search, TrendingUp, Users, Award } from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { BookOpen, Code, Search, TrendingUp, Users, Award, ArrowRight, X } from "lucide-react";
 
 const tutorials = [
+    {
+        title: "DevOps Ecosystem",
+        description:
+            "Master CI/CD, Cloud, Containers, and Automation — AWS, Jenkins, Docker, K8s, Terraform, and Monitoring.",
+        icon: "♾️",
+        color: "from-violet-600 to-indigo-700",
+        bgLight: "bg-violet-50",
+        borderColor: "border-violet-200",
+        hoverShadow: "hover:shadow-violet-200/50",
+        link: "/devops",
+        topics: "Multi-tool",
+        level: "Beginner to Professional",
+        keywords: ["devops", "aws", "jenkins", "docker", "kubernetes", "k8s", "terraform", "ansible", "ci/cd", "cloud", "monitoring", "prometheus", "grafana", "git", "shell"],
+    },
     {
         title: "Python Tutorial",
         description:
@@ -14,6 +29,7 @@ const tutorials = [
         link: "/python",
         topics: 42,
         level: "Beginner to Advanced",
+        keywords: ["python", "oop", "file handling", "loops", "functions", "variables", "scripting"],
     },
     {
         title: "Java Tutorial",
@@ -27,6 +43,7 @@ const tutorials = [
         link: "/java",
         topics: 6,
         level: "Beginner to Advanced",
+        keywords: ["java", "oop", "collections", "exceptions", "jvm", "spring"],
     },
     {
         title: "JavaScript Tutorial",
@@ -40,6 +57,7 @@ const tutorials = [
         link: "/javascript",
         topics: 35,
         level: "Beginner to Advanced",
+        keywords: ["javascript", "js", "es6", "dom", "async", "closures", "web", "frontend", "react", "node"],
     },
     {
         title: "Linux Tutorial",
@@ -53,6 +71,7 @@ const tutorials = [
         link: "/linux",
         topics: 10,
         level: "Beginner to Advanced",
+        keywords: ["linux", "command line", "terminal", "bash", "ubuntu", "shell", "sysadmin", "permissions"],
     },
     {
         title: "C Programming Tutorial",
@@ -66,6 +85,7 @@ const tutorials = [
         link: "/c-programming",
         topics: 17,
         level: "Beginner to Advanced",
+        keywords: ["c", "c programming", "pointers", "memory", "structures", "algorithms", "data structures"],
     },
     {
         title: "C++ Tutorial",
@@ -79,6 +99,7 @@ const tutorials = [
         link: "/cpp",
         topics: 20,
         level: "Intermediate to Advanced",
+        keywords: ["c++", "cpp", "stl", "templates", "polymorphism", "oop", "competitive programming"],
     },
     {
         title: "SQL Tutorial",
@@ -92,6 +113,7 @@ const tutorials = [
         link: "/sql",
         topics: 16,
         level: "Beginner to Advanced",
+        keywords: ["sql", "database", "mysql", "postgresql", "queries", "joins", "nosql", "mongodb"],
     },
     {
         title: "Flask Tutorial",
@@ -105,6 +127,7 @@ const tutorials = [
         link: "/flask",
         topics: 12,
         level: "Beginner to Intermediate",
+        keywords: ["flask", "python", "web", "api", "rest", "routing", "templates", "backend"],
     },
     {
         title: "Django Tutorial",
@@ -118,6 +141,35 @@ const tutorials = [
         link: "/django",
         topics: 22,
         level: "Intermediate to Advanced",
+        keywords: ["django", "python", "web", "orm", "mvt", "rest", "api", "auth", "backend"],
+    },
+    {
+        title: "HTML Tutorial",
+        description:
+            "Master industrial-level HTML5 — Semantic SEO, Accessibility, Forms, and Page Speed Optimization.",
+        icon: "🏗️",
+        color: "from-orange-500 to-red-600",
+        bgLight: "bg-orange-50",
+        borderColor: "border-orange-200",
+        hoverShadow: "hover:shadow-orange-200/50",
+        link: "/html",
+        topics: 7,
+        level: "Beginner to Advanced",
+        keywords: ["html", "html5", "web", "seo", "accessibility", "forms", "frontend", "markup"],
+    },
+    {
+        title: "CSS Tutorial",
+        description:
+            "Design beautiful interfaces with CSS3 — Flexbox, Grid, Animations, Variables, and Responsive Design.",
+        icon: "🎨",
+        color: "from-blue-600 to-indigo-700",
+        bgLight: "bg-blue-50",
+        borderColor: "border-blue-200",
+        hoverShadow: "hover:shadow-blue-200/50",
+        link: "/css",
+        topics: 7,
+        level: "Beginner to Advanced",
+        keywords: ["css", "css3", "flexbox", "grid", "animations", "responsive", "design", "frontend", "styling"],
     },
 ];
 
@@ -129,6 +181,86 @@ const stats = [
 ];
 
 const TutorialHome = () => {
+    const [searchQuery, setSearchQuery] = useState("");
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [activeIndex, setActiveIndex] = useState(-1);
+    const searchRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
+    const navigate = useNavigate();
+
+    // Filter tutorials based on search query
+    const filteredTutorials = tutorials.filter((tutorial) => {
+        if (!searchQuery.trim()) return true;
+        const query = searchQuery.toLowerCase().trim();
+        return (
+            tutorial.title.toLowerCase().includes(query) ||
+            tutorial.description.toLowerCase().includes(query) ||
+            tutorial.keywords.some((kw) => kw.includes(query))
+        );
+    });
+
+    // Dropdown results (only show when actively searching)
+    const dropdownResults = searchQuery.trim() ? filteredTutorials : [];
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+                setIsDropdownOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    // Keyboard navigation
+    const handleKeyDown = useCallback(
+        (e: React.KeyboardEvent) => {
+            if (e.key === "ArrowDown") {
+                e.preventDefault();
+                setActiveIndex((prev) =>
+                    prev < dropdownResults.length - 1 ? prev + 1 : 0
+                );
+            } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                setActiveIndex((prev) =>
+                    prev > 0 ? prev - 1 : dropdownResults.length - 1
+                );
+            } else if (e.key === "Enter") {
+                e.preventDefault();
+                if (activeIndex >= 0 && activeIndex < dropdownResults.length) {
+                    navigate(dropdownResults[activeIndex].link);
+                    setIsDropdownOpen(false);
+                    setSearchQuery("");
+                } else if (dropdownResults.length === 1) {
+                    navigate(dropdownResults[0].link);
+                    setIsDropdownOpen(false);
+                    setSearchQuery("");
+                }
+            } else if (e.key === "Escape") {
+                setIsDropdownOpen(false);
+                inputRef.current?.blur();
+            }
+        },
+        [activeIndex, dropdownResults, navigate]
+    );
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value);
+        setIsDropdownOpen(true);
+        setActiveIndex(-1);
+    };
+
+    const clearSearch = () => {
+        setSearchQuery("");
+        setIsDropdownOpen(false);
+        setActiveIndex(-1);
+        inputRef.current?.focus();
+    };
+
+    // Scroll to tutorials section when searching
+    const tutorialsSectionRef = useRef<HTMLDivElement>(null);
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
             {/* Hero Section */}
@@ -156,20 +288,92 @@ const TutorialHome = () => {
                         </p>
 
                         {/* Search Bar */}
-                        <div className="mt-10 max-w-xl mx-auto">
+                        <div className="mt-10 max-w-xl mx-auto" ref={searchRef}>
                             <div className="relative group">
                                 <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500 to-orange-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500" />
                                 <div className="relative flex items-center bg-white rounded-xl shadow-lg border border-gray-200">
-                                    <Search className="w-5 h-5 text-gray-400 ml-4" />
+                                    <Search className="w-5 h-5 text-gray-400 ml-4 shrink-0" />
                                     <input
+                                        ref={inputRef}
                                         type="text"
+                                        value={searchQuery}
+                                        onChange={handleSearchChange}
+                                        onFocus={() => searchQuery.trim() && setIsDropdownOpen(true)}
+                                        onKeyDown={handleKeyDown}
                                         placeholder="Search tutorials... (e.g., Python, Java, SQL)"
                                         className="flex-1 px-4 py-4 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400"
+                                        id="tutorial-search"
                                     />
-                                    <button className="mr-2 px-6 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
+                                    {searchQuery && (
+                                        <button
+                                            onClick={clearSearch}
+                                            className="p-1.5 mr-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                                            aria-label="Clear search"
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={() => {
+                                            if (dropdownResults.length === 1) {
+                                                navigate(dropdownResults[0].link);
+                                                setSearchQuery("");
+                                                setIsDropdownOpen(false);
+                                            } else if (searchQuery.trim()) {
+                                                tutorialsSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+                                                setIsDropdownOpen(false);
+                                            }
+                                        }}
+                                        className="mr-2 px-6 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+                                    >
                                         Search
                                     </button>
                                 </div>
+
+                                {/* Search Dropdown Results */}
+                                {isDropdownOpen && searchQuery.trim() && (
+                                    <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                                        {dropdownResults.length > 0 ? (
+                                            <ul className="py-2 max-h-80 overflow-y-auto">
+                                                {dropdownResults.map((tutorial, index) => (
+                                                    <li key={tutorial.title}>
+                                                        <Link
+                                                            to={tutorial.link}
+                                                            onClick={() => {
+                                                                setSearchQuery("");
+                                                                setIsDropdownOpen(false);
+                                                            }}
+                                                            className={`flex items-center gap-3 px-4 py-3 transition-colors ${index === activeIndex
+                                                                    ? "bg-amber-50 text-amber-900"
+                                                                    : "hover:bg-gray-50 text-gray-700"
+                                                                }`}
+                                                        >
+                                                            <span className="text-xl shrink-0 w-8 text-center">{tutorial.icon}</span>
+                                                            <div className="flex-1 min-w-0 text-left">
+                                                                <p className="font-semibold text-sm truncate">{tutorial.title}</p>
+                                                                <p className="text-xs text-gray-500 truncate">{tutorial.description}</p>
+                                                            </div>
+                                                            <ArrowRight className={`w-4 h-4 shrink-0 transition-transform ${index === activeIndex ? "text-amber-600 translate-x-0.5" : "text-gray-300"
+                                                                }`} />
+                                                        </Link>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <div className="px-4 py-8 text-center">
+                                                <p className="text-gray-500 text-sm">No tutorials found for "<span className="font-medium text-gray-700">{searchQuery}</span>"</p>
+                                                <p className="text-xs text-gray-400 mt-1">Try searching for Python, Java, SQL, DevOps, etc.</p>
+                                            </div>
+                                        )}
+                                        {dropdownResults.length > 0 && (
+                                            <div className="border-t border-gray-100 px-4 py-2 bg-gray-50">
+                                                <p className="text-xs text-gray-400">
+                                                    {dropdownResults.length} result{dropdownResults.length !== 1 ? "s" : ""} found · Use ↑↓ to navigate · Enter to select
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -199,70 +403,94 @@ const TutorialHome = () => {
             </section>
 
             {/* Tutorial Cards Section */}
-            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" ref={tutorialsSectionRef}>
                 <div className="text-center mb-12">
                     <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                        Explore{" "}
-                        <span className="text-amber-600">Tutorials</span>
+                        {searchQuery.trim() ? (
+                            <>
+                                Results for{" "}
+                                <span className="text-amber-600">"{searchQuery.trim()}"</span>
+                            </>
+                        ) : (
+                            <>
+                                Explore{" "}
+                                <span className="text-amber-600">Tutorials</span>
+                            </>
+                        )}
                     </h2>
                     <p className="mt-3 text-gray-600 max-w-xl mx-auto">
-                        Choose a programming language to start learning. Each tutorial is structured
-                        from basics to advanced topics with hands-on examples.
+                        {searchQuery.trim()
+                            ? `Found ${filteredTutorials.length} tutorial${filteredTutorials.length !== 1 ? "s" : ""} matching your search.`
+                            : "Choose a programming language to start learning. Each tutorial is structured from basics to advanced topics with hands-on examples."}
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {tutorials.map((tutorial) => (
-                        <div
-                            key={tutorial.title}
-                            className={`group relative bg-white rounded-2xl border ${tutorial.borderColor} shadow-sm ${tutorial.hoverShadow} hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden`}
-                        >
-                            {/* Gradient top accent */}
+                {filteredTutorials.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {filteredTutorials.map((tutorial) => (
                             <div
-                                className={`h-1.5 bg-gradient-to-r ${tutorial.color}`}
-                            />
+                                key={tutorial.title}
+                                className={`group relative bg-white rounded-2xl border ${tutorial.borderColor} shadow-sm ${tutorial.hoverShadow} hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden`}
+                            >
+                                {/* Gradient top accent */}
+                                <div
+                                    className={`h-1.5 bg-gradient-to-r ${tutorial.color}`}
+                                />
 
-                            <div className="p-6">
-                                {/* Icon and title */}
-                                <div className="flex items-start gap-4 mb-4">
-                                    <div
-                                        className={`w-14 h-14 ${tutorial.bgLight} rounded-xl flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform duration-300`}
-                                    >
-                                        {tutorial.icon}
+                                <div className="p-6">
+                                    {/* Icon and title */}
+                                    <div className="flex items-start gap-4 mb-4">
+                                        <div
+                                            className={`w-14 h-14 ${tutorial.bgLight} rounded-xl flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform duration-300`}
+                                        >
+                                            {tutorial.icon}
+                                        </div>
+                                        <div>
+                                            <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                                                {tutorial.title}
+                                            </h3>
+                                            <p className="text-sm text-gray-500 mt-0.5">
+                                                {tutorial.level}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                                            {tutorial.title}
-                                        </h3>
-                                        <p className="text-sm text-gray-500 mt-0.5">
-                                            {tutorial.level}
-                                        </p>
+
+                                    {/* Description */}
+                                    <p className="text-gray-600 text-sm leading-relaxed mb-5">
+                                        {tutorial.description}
+                                    </p>
+
+                                    {/* Footer */}
+                                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                                        <span className="text-sm text-gray-500 flex items-center gap-1.5">
+                                            <BookOpen className="w-4 h-4" />
+                                            {tutorial.topics} Chapters
+                                        </span>
+
+                                        <Link
+                                            to={tutorial.link}
+                                            className={`text-sm font-semibold bg-gradient-to-r ${tutorial.color} bg-clip-text text-transparent hover:opacity-80 transition-opacity`}
+                                        >
+                                            Start Learning →
+                                        </Link>
                                     </div>
-                                </div>
-
-                                {/* Description */}
-                                <p className="text-gray-600 text-sm leading-relaxed mb-5">
-                                    {tutorial.description}
-                                </p>
-
-                                {/* Footer */}
-                                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                                    <span className="text-sm text-gray-500 flex items-center gap-1.5">
-                                        <BookOpen className="w-4 h-4" />
-                                        {tutorial.topics} Chapters
-                                    </span>
-
-                                    <Link
-                                        to={tutorial.link}
-                                        className={`text-sm font-semibold bg-gradient-to-r ${tutorial.color} bg-clip-text text-transparent hover:opacity-80 transition-opacity`}
-                                    >
-                                        Start Learning →
-                                    </Link>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-16">
+                        <div className="text-5xl mb-4">🔍</div>
+                        <h3 className="text-xl font-semibold text-gray-700 mb-2">No tutorials found</h3>
+                        <p className="text-gray-500 mb-6">We couldn't find any tutorials matching "{searchQuery}"</p>
+                        <button
+                            onClick={clearSearch}
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-amber-100 text-amber-700 font-semibold rounded-xl hover:bg-amber-200 transition-colors"
+                        >
+                            Clear Search
+                        </button>
+                    </div>
+                )}
             </section>
 
             {/* Why Learn With Us Section */}

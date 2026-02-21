@@ -28,6 +28,29 @@ import FlaskTutorial from "./pages/FlaskTutorial";
 import FlaskChapter from "./pages/FlaskChapter";
 import DjangoTutorial from "./pages/DjangoTutorial";
 import DjangoChapter from "./pages/DjangoChapter";
+import HtmlTutorial from "./pages/HtmlTutorial";
+import HtmlChapter from "./pages/HtmlChapter";
+import CssTutorial from "./pages/CssTutorial";
+import CssChapter from "./pages/CssChapter";
+import DevOpsHome from "./pages/DevOpsHome";
+import AwsTutorial from "./pages/AwsTutorial";
+import AwsChapter from "./pages/AwsChapter";
+import JenkinsTutorial from "./pages/JenkinsTutorial";
+import JenkinsChapter from "./pages/JenkinsChapter";
+import DockerTutorial from "./pages/DockerTutorial";
+import DockerChapter from "./pages/DockerChapter";
+import K8sTutorial from "./pages/K8sTutorial";
+import K8sChapter from "./pages/K8sChapter";
+import TerraformTutorial from "./pages/TerraformTutorial";
+import TerraformChapter from "./pages/TerraformChapter";
+import AnsibleTutorial from "./pages/AnsibleTutorial";
+import AnsibleChapter from "./pages/AnsibleChapter";
+import GithubTutorial from "./pages/GithubTutorial";
+import GithubChapter from "./pages/GithubChapter";
+import ShellTutorial from "./pages/ShellTutorial";
+import ShellChapter from "./pages/ShellChapter";
+import MonitoringTutorial from "./pages/MonitoringTutorial";
+import MonitoringChapter from "./pages/MonitoringChapter";
 import Compiler from "./pages/Compiler";
 import NotFound from "./pages/NotFound";
 
@@ -64,6 +87,29 @@ const App = () => (
               <Route path="/flask/:slug" element={<FlaskChapter />} />
               <Route path="/django" element={<DjangoTutorial />} />
               <Route path="/django/:slug" element={<DjangoChapter />} />
+              <Route path="/html" element={<HtmlTutorial />} />
+              <Route path="/html/:slug" element={<HtmlChapter />} />
+              <Route path="/css" element={<CssTutorial />} />
+              <Route path="/css/:slug" element={<CssChapter />} />
+              <Route path="/devops" element={<DevOpsHome />} />
+              <Route path="/devops/aws" element={<AwsTutorial />} />
+              <Route path="/devops/aws/:slug" element={<AwsChapter />} />
+              <Route path="/devops/jenkins" element={<JenkinsTutorial />} />
+              <Route path="/devops/jenkins/:slug" element={<JenkinsChapter />} />
+              <Route path="/devops/docker" element={<DockerTutorial />} />
+              <Route path="/devops/docker/:slug" element={<DockerChapter />} />
+              <Route path="/devops/kubernetes" element={<K8sTutorial />} />
+              <Route path="/devops/kubernetes/:slug" element={<K8sChapter />} />
+              <Route path="/devops/terraform" element={<TerraformTutorial />} />
+              <Route path="/devops/terraform/:slug" element={<TerraformChapter />} />
+              <Route path="/devops/ansible" element={<AnsibleTutorial />} />
+              <Route path="/devops/ansible/:slug" element={<AnsibleChapter />} />
+              <Route path="/devops/github" element={<GithubTutorial />} />
+              <Route path="/devops/github/:slug" element={<GithubChapter />} />
+              <Route path="/devops/shell" element={<ShellTutorial />} />
+              <Route path="/devops/shell/:slug" element={<ShellChapter />} />
+              <Route path="/devops/monitoring" element={<MonitoringTutorial />} />
+              <Route path="/devops/monitoring/:slug" element={<MonitoringChapter />} />
               <Route path="/compiler" element={<Compiler />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

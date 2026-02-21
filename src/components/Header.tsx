@@ -31,6 +31,9 @@ export const Header = () => {
     { name: "Linux", path: "/linux" },
     { name: "Flask", path: "/flask" },
     { name: "Django", path: "/django" },
+    { name: "HTML", path: "/html" },
+    { name: "CSS", path: "/css" },
+    { name: "DevOps", path: "/devops" },
   ];
 
   const mainNav: NavItem[] = [
@@ -73,7 +76,7 @@ export const Header = () => {
 
             {/* Tutorials Dropdown */}
             <DropdownMenu>
-              <DropdownMenuTrigger className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 outline-none ${isTutorialActive || location.pathname.includes("/python") || location.pathname.includes("/java") || location.pathname.includes("/golang") || location.pathname.includes("/c-programming") || location.pathname.includes("/cpp") || location.pathname.includes("/javascript") || location.pathname.includes("/sql") || location.pathname.includes("/linux") || location.pathname.includes("/flask") || location.pathname.includes("/django") ? "text-amber-600 bg-amber-50" : "text-gray-600 hover:text-amber-600 hover:bg-amber-50/50"}`}>
+              <DropdownMenuTrigger className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 outline-none ${isTutorialActive || location.pathname.includes("/python") || location.pathname.includes("/java") || location.pathname.includes("/golang") || location.pathname.includes("/c-programming") || location.pathname.includes("/cpp") || location.pathname.includes("/javascript") || location.pathname.includes("/sql") || location.pathname.includes("/linux") || location.pathname.includes("/flask") || location.pathname.includes("/django") || location.pathname.includes("/html") || location.pathname.includes("/css") || location.pathname.includes("/devops") ? "text-amber-600 bg-amber-50" : "text-gray-600 hover:text-amber-600 hover:bg-amber-50/50"}`}>
                 Tutorials <ChevronDown className="w-4 h-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-48 bg-white border-gray-100 shadow-lg p-1">
