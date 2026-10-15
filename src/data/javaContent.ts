@@ -1,3 +1,13 @@
+export interface CommonMistake {
+    mistake: string;
+    fix: string;
+}
+
+export interface PracticeExercise {
+    task: string;
+    hint?: string;
+}
+
 export interface Section {
     heading: string;
     content: string;
@@ -5,6 +15,11 @@ export interface Section {
     codeTitle?: string;
     note?: string;
     output?: string;
+    objectives?: string[];
+    explanation?: string;
+    commonMistakes?: CommonMistake[];
+    exercise?: PracticeExercise;
+    takeaways?: string[];
 }
 
 export interface Chapter {

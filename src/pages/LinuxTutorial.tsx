@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { BookOpen, ChevronRight, Home } from "lucide-react";
 import { linuxChapters } from "../data/linuxContent";
+import { CourseOverviewAssessmentNotification } from "../components/CourseProgressControls";
 
 const LinuxTutorial = () => {
     return (
@@ -94,10 +95,7 @@ const LinuxTutorial = () => {
                     ))}
                 </div>
 
-                <div className="mt-8 bg-gradient-to-r from-slate-50 to-stone-50 border border-slate-100 rounded-xl p-6 text-center">
-                    <p className="text-slate-800 font-semibold">🚀 More chapters are being added regularly!</p>
-                    <p className="text-slate-600 text-sm mt-1">Bookmark this page and check back for new content.</p>
-                </div>
+                <CourseOverviewAssessmentNotification courseId="linux" chapters={linuxChapters} />
             </section>
         </div>
     );

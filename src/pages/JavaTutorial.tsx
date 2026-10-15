@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { BookOpen, ChevronRight, Home, Coffee } from "lucide-react";
 import { javaChapters } from "../data/javaContent";
+import { CourseOverviewAssessmentNotification } from "../components/CourseProgressControls";
 
 const JavaTutorial = () => {
     return (
@@ -95,10 +96,7 @@ const JavaTutorial = () => {
                     ))}
                 </div>
 
-                <div className="mt-8 bg-gradient-to-r from-orange-50 to-red-50 border border-orange-100 rounded-xl p-6 text-center">
-                    <p className="text-orange-800 font-semibold">🚀 More chapters are being added regularly!</p>
-                    <p className="text-orange-600 text-sm mt-1">Bookmark this page and check back for new content.</p>
-                </div>
+                <CourseOverviewAssessmentNotification courseId="java" chapters={javaChapters} />
             </section>
         </div>
     );

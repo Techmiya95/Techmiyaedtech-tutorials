@@ -1,10 +1,17 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ChevronRight, ChevronLeft, Home, BookOpen, Copy, Check, AlertTriangle, Lightbulb, Menu, X, Database, Terminal } from "lucide-react";
+import { ChevronRight, ChevronLeft, Home, BookOpen, Copy, Check, AlertTriangle, Lightbulb, Menu, X, Database, Terminal, Award } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { allSqlChapters } from "../data/sqlIndex";
 import type { Section } from "../data/javaContent";
+import { useCourseProgress } from "../lib/courseProgress";
+import {
+  LessonCompletionButton,
+  CourseCertificationBanner,
+  CourseSidebarBadge,
+  CourseSidebarBottomNotification,
+} from "../components/CourseProgressControls";
 
 const customStyle = {
     ...vscDarkPlus,
@@ -104,6 +111,18 @@ const SqlChapter = () => {
     const prevChapter = chapterIndex > 0 ? allSqlChapters[chapterIndex - 1] : null;
     const nextChapter = chapterIndex < allSqlChapters.length - 1 ? allSqlChapters[chapterIndex + 1] : null;
 
+    const courseUnits = allSqlChapters.map((ch) => ({
+        id: ch.id,
+        slug: ch.slug,
+        title: ch.title,
+    }));
+
+    const { completedSlugs, isCurrentCompleted, eligibility, toggleComplete } = useCourseProgress(
+        "sql",
+        courseUnits,
+        slug
+    );
+
     useEffect(() => { window.scrollTo(0, 0); setSidebarOpen(false); }, [slug]);
 
     if (!chapter) {
@@ -139,18 +158,33 @@ const SqlChapter = () => {
 
                 <aside className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 fixed lg:sticky top-16 left-0 z-40 w-72 h-[calc(100vh-4rem)] bg-white lg:bg-transparent border-r border-gray-100 overflow-y-auto transition-transform duration-300 lg:block shrink-0`}>
                     <div className="p-4">
+                        <div className="mb-4 pb-3 border-b border-gray-100">
+                            <CourseSidebarBadge eligibility={eligibility} />
+                        </div>
                         <Link to="/sql" className="flex items-center gap-2 text-sm font-semibold text-orange-600 mb-4 hover:text-orange-700">
                             <BookOpen className="w-4 h-4" /> 🗄️ SQL Tutorial
                         </Link>
                         <nav className="space-y-0.5">
-                            {allSqlChapters.map((ch) => (
-                                <Link key={ch.id} to={`/sql/${ch.slug}`} onClick={() => setSidebarOpen(false)}
-                                    className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-150 ${ch.slug === slug ? "bg-orange-50 text-orange-700 font-semibold border border-orange-200" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}>
-                                    <span className={`w-6 h-6 rounded text-xs flex items-center justify-center font-bold shrink-0 ${ch.slug === slug ? "bg-orange-600 text-white" : "bg-gray-100 text-gray-500"}`}>{ch.id}</span>
-                                    <span className="truncate">{ch.title}</span>
-                                </Link>
-                            ))}
+                            {allSqlChapters.map((ch) => {
+                                const isDone = completedSlugs.includes(ch.slug);
+                                const isCurrent = ch.slug === slug;
+                                return (
+                                    <Link key={ch.id} to={`/sql/${ch.slug}`} onClick={() => setSidebarOpen(false)}
+                                        className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all duration-150 ${isCurrent ? "bg-orange-50 text-orange-700 font-semibold border border-orange-200" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}>
+                                        <div className="flex items-center gap-2.5 truncate">
+                                            <span className={`w-6 h-6 rounded text-xs flex items-center justify-center font-bold shrink-0 ${isCurrent ? "bg-orange-600 text-white" : isDone ? "bg-emerald-100 text-emerald-800" : "bg-gray-100 text-gray-500"}`}>{isDone ? "✓" : ch.id}</span>
+                                            <span className="truncate">{ch.title}</span>
+                                        </div>
+                                        {isDone && (
+                                            <span className="text-[10px] text-emerald-600 font-bold shrink-0 ml-1">
+                                                Done
+                                            </span>
+                                        )}
+                                    </Link>
+                                );
+                            })}
                         </nav>
+                        <CourseSidebarBottomNotification eligibility={eligibility} />
                     </div>
                 </aside>
 
@@ -165,6 +199,21 @@ const SqlChapter = () => {
 
                     {chapter.sections.map((section, i) => <SectionContent key={i} section={section} />)}
 
+                    {/* Lesson Completion Status */}
+                    <div className="mt-10">
+                        <LessonCompletionButton
+                            isCompleted={isCurrentCompleted}
+                            onToggle={() => toggleComplete()}
+                            unitTitle={chapter.title}
+                        />
+                    </div>
+
+                    {/* Certification Status & Callout */}
+                    <CourseCertificationBanner
+                        eligibility={eligibility}
+                        courseBasePath="/sql"
+                    />
+
                     <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
                         {prevChapter ? (
                             <Link to={`/sql/${prevChapter.slug}`} className="flex items-center gap-3 px-5 py-3 rounded-xl border border-gray-200 hover:border-orange-300 hover:shadow-md transition-all group">
@@ -178,8 +227,9 @@ const SqlChapter = () => {
                                 <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-orange-500" />
                             </Link>
                         ) : (
-                            <Link to="/sql" className="flex items-center justify-end gap-3 px-5 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 text-white hover:shadow-md transition-all">
-                                <div className="text-right"><p className="text-xs text-orange-200">Completed!</p><p className="font-semibold">Back to SQL Tutorial</p></div>
+                            <Link to="/assessment/sql" className="flex items-center justify-end gap-3 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold hover:shadow-md transition-all text-right">
+                                <div><p className="text-xs text-amber-950 font-semibold">Course Complete!</p><p className="text-sm">Start 50-Mark Assessment →</p></div>
+                                <Award className="w-5 h-5 text-slate-950" />
                             </Link>
                         )}
                     </div>

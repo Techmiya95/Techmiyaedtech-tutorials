@@ -1,11 +1,18 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ChevronRight, ChevronLeft, Home, BookOpen, Copy, Check, AlertTriangle, Lightbulb, Menu, X, FileCode, Terminal } from "lucide-react";
+import { ChevronRight, ChevronLeft, Home, BookOpen, Copy, Check, AlertTriangle, Lightbulb, Menu, X, FileCode, Terminal, Award, Lock } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { pythonChapters } from "../data/pythonContent";
 import { pythonChapters2 } from "../data/pythonContentPart2";
 import type { Chapter, Section } from "../data/pythonContent";
+import { useCourseProgress } from "../lib/courseProgress";
+import {
+  LessonCompletionButton,
+  CourseCertificationBanner,
+  CourseSidebarBadge,
+  CourseSidebarBottomNotification,
+} from "../components/CourseProgressControls";
 
 // Merge all chapters
 const allChapters: Chapter[] = [...pythonChapters, ...pythonChapters2];
@@ -146,6 +153,18 @@ const PythonChapter = () => {
     const prevChapter = chapterIndex > 0 ? allChapters[chapterIndex - 1] : null;
     const nextChapter = chapterIndex < allChapters.length - 1 ? allChapters[chapterIndex + 1] : null;
 
+    const courseUnits = allChapters.map((ch) => ({
+        id: ch.id,
+        slug: ch.slug,
+        title: ch.title,
+    }));
+
+    const { completedSlugs, isCurrentCompleted, eligibility, toggleComplete } = useCourseProgress(
+        "python",
+        courseUnits,
+        slug
+    );
+
     useEffect(() => {
         window.scrollTo(0, 0);
         setSidebarOpen(false);
@@ -192,28 +211,42 @@ const PythonChapter = () => {
                 {/* Sidebar */}
                 <aside className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 fixed lg:sticky top-16 left-0 z-40 w-72 h-[calc(100vh-4rem)] bg-white lg:bg-transparent border-r border-gray-100 overflow-y-auto transition-transform duration-300 lg:block shrink-0`}>
                     <div className="p-4">
+                        <div className="mb-4 pb-3 border-b border-gray-100">
+                            <CourseSidebarBadge eligibility={eligibility} />
+                        </div>
                         <Link to="/python" className="flex items-center gap-2 text-sm font-semibold text-blue-600 mb-4 hover:text-blue-700">
                             <BookOpen className="w-4 h-4" /> 🐍 Python Tutorial
                         </Link>
                         <nav className="space-y-0.5">
-                            {allChapters.map((ch) => (
-                                <Link
-                                    key={ch.id}
-                                    to={`/python/${ch.slug}`}
-                                    onClick={() => setSidebarOpen(false)}
-                                    className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-150 ${ch.slug === slug
-                                        ? "bg-blue-50 text-blue-700 font-semibold border border-blue-200"
-                                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                                        }`}
-                                >
-                                    <span className={`w-6 h-6 rounded text-xs flex items-center justify-center font-bold shrink-0 ${ch.slug === slug ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-500"
-                                        }`}>
-                                        {ch.id}
-                                    </span>
-                                    <span className="truncate">{ch.title}</span>
-                                </Link>
-                            ))}
+                            {allChapters.map((ch) => {
+                                const isDone = completedSlugs.includes(ch.slug);
+                                return (
+                                    <Link
+                                        key={ch.id}
+                                        to={`/python/${ch.slug}`}
+                                        onClick={() => setSidebarOpen(false)}
+                                        className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all duration-150 ${ch.slug === slug
+                                            ? "bg-blue-50 text-blue-700 font-semibold border border-blue-200"
+                                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                                            }`}
+                                    >
+                                        <div className="flex items-center gap-2.5 truncate">
+                                            <span className={`w-6 h-6 rounded text-xs flex items-center justify-center font-bold shrink-0 ${ch.slug === slug ? "bg-blue-600 text-white" : isDone ? "bg-emerald-100 text-emerald-800" : "bg-gray-100 text-gray-500"
+                                                }`}>
+                                                {isDone ? "✓" : ch.id}
+                                            </span>
+                                            <span className="truncate">{ch.title}</span>
+                                        </div>
+                                        {isDone && (
+                                            <span className="text-[10px] text-emerald-600 font-bold shrink-0 ml-1">
+                                                Done
+                                            </span>
+                                        )}
+                                    </Link>
+                                );
+                            })}
                         </nav>
+                        <CourseSidebarBottomNotification eligibility={eligibility} />
                     </div>
                 </aside>
 
@@ -237,6 +270,21 @@ const PythonChapter = () => {
                     {chapter.sections.map((section, i) => (
                         <SectionContent key={i} section={section} />
                     ))}
+
+                    {/* Lesson Completion Action Button */}
+                    <div className="mt-10">
+                        <LessonCompletionButton
+                            isCompleted={isCurrentCompleted}
+                            onToggle={() => toggleComplete()}
+                            unitTitle={chapter.title}
+                        />
+                    </div>
+
+                    {/* Certification Status & Callout */}
+                    <CourseCertificationBanner
+                        eligibility={eligibility}
+                        courseBasePath="/python"
+                    />
 
                     {/* Navigation */}
                     <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
@@ -264,16 +312,25 @@ const PythonChapter = () => {
                                 </div>
                                 <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-blue-500" />
                             </Link>
-                        ) : (
+                        ) : eligibility.isEligible ? (
                             <Link
-                                to="/python"
-                                className="flex items-center justify-end gap-3 px-5 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:shadow-md transition-all"
+                                to="/assessment/python"
+                                className="flex items-center justify-end gap-3 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold hover:shadow-md transition-all text-right"
                             >
-                                <div className="text-right">
-                                    <p className="text-xs text-blue-100">Completed!</p>
-                                    <p className="font-semibold">Back to Python Tutorial</p>
+                                <div>
+                                    <p className="text-xs text-amber-900 font-semibold">Ready for Exam?</p>
+                                    <p className="text-sm">Start 50-Mark Assessment →</p>
                                 </div>
+                                <Award className="w-5 h-5 text-slate-950" />
                             </Link>
+                        ) : (
+                            <div className="flex items-center justify-end gap-3 px-6 py-3 rounded-xl bg-slate-100 text-slate-400 border border-slate-200 text-right cursor-not-allowed">
+                                <div>
+                                    <p className="text-xs text-slate-400 font-semibold">Exam Locked</p>
+                                    <p className="text-xs font-medium">Complete earlier units first</p>
+                                </div>
+                                <Lock className="w-4 h-4 text-slate-400" />
+                            </div>
                         )}
                     </div>
                 </main>

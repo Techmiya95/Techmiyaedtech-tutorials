@@ -11,7 +11,8 @@ import {
     Layout,
     Github,
     BarChart3,
-    Server
+    Server,
+    CheckSquare
 } from "lucide-react";
 
 const devopsTools = [
@@ -65,8 +66,8 @@ const devopsTools = [
         link: "/devops/ansible"
     },
     {
-        title: "GitHub Actions",
-        description: "Learn modern DevOps automation directly within your GitHub repositories.",
+        title: "Git & GitHub",
+        description: "Master Git version control, branching, pull requests, and GitHub Actions CI/CD workflows.",
         icon: <Github className="w-6 h-6" />,
         color: "from-gray-800 to-black",
         link: "/devops/github"
@@ -84,6 +85,13 @@ const devopsTools = [
         icon: <BarChart3 className="w-6 h-6" />,
         color: "from-orange-600 to-red-500",
         link: "/devops/monitoring"
+    },
+    {
+        title: "Jira Agile Management",
+        description: "Master Scrum/Kanban boards, sprints, JQL filters, and automated DevOps issue tracking.",
+        icon: <CheckSquare className="w-6 h-6" />,
+        color: "from-blue-600 to-indigo-700",
+        link: "/jira"
     }
 ];
 

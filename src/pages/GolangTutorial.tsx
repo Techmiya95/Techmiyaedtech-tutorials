@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { BookOpen, ChevronRight, Home } from "lucide-react";
 import { golangChapters } from "../data/golangContent";
+import { CourseOverviewAssessmentNotification } from "../components/CourseProgressControls";
 
 const GolangTutorial = () => {
     return (
@@ -94,10 +95,7 @@ const GolangTutorial = () => {
                     ))}
                 </div>
 
-                <div className="mt-8 bg-gradient-to-r from-cyan-50 to-blue-50 border border-cyan-100 rounded-xl p-6 text-center">
-                    <p className="text-cyan-800 font-semibold">🚀 More chapters are being added regularly!</p>
-                    <p className="text-cyan-600 text-sm mt-1">Bookmark this page and check back for new content.</p>
-                </div>
+                <CourseOverviewAssessmentNotification courseId="golang" chapters={golangChapters} />
             </section>
         </div>
     );

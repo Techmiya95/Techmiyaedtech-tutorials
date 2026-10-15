@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { BookOpen, ChevronRight, Home, FlaskConical } from "lucide-react";
 import { flaskChapters } from "../data/flaskContent";
+import { CourseOverviewAssessmentNotification } from "../components/CourseProgressControls";
 
 const FlaskTutorial = () => {
     return (
@@ -93,6 +94,8 @@ const FlaskTutorial = () => {
                         </Link>
                     ))}
                 </div>
+
+                <CourseOverviewAssessmentNotification courseId="flask" chapters={flaskChapters} />
             </section>
         </div>
     );

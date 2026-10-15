@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { BookOpen, ChevronRight, Home } from "lucide-react";
 import { pythonChapters } from "../data/pythonContent";
 import { pythonChapters2 } from "../data/pythonContentPart2";
+import { CourseOverviewAssessmentNotification } from "../components/CourseProgressControls";
 
 const allChapters = [...pythonChapters, ...pythonChapters2];
 
@@ -98,10 +99,7 @@ const PythonTutorial = () => {
                     ))}
                 </div>
 
-                <div className="mt-8 bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-100 rounded-xl p-6 text-center">
-                    <p className="text-blue-800 font-semibold">🚀 More chapters are being added regularly!</p>
-                    <p className="text-blue-600 text-sm mt-1">Bookmark this page and check back for new content.</p>
-                </div>
+                <CourseOverviewAssessmentNotification courseId="python" chapters={allChapters} />
             </section>
         </div>
     );

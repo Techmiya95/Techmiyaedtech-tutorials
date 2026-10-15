@@ -1,13 +1,14 @@
 
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, BookOpen, ChevronDown } from "lucide-react";
+import { Menu, X, BookOpen, ChevronDown, Award } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { getMainSiteBaseUrl } from "../lib/navConfig";
 
 interface NavItem {
   name: string;
@@ -19,6 +20,7 @@ interface NavItem {
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const mainSiteUrl = getMainSiteBaseUrl();
 
   const tutorials: NavItem[] = [
     { name: "Python", path: "/python" },
@@ -34,17 +36,16 @@ export const Header = () => {
     { name: "HTML", path: "/html" },
     { name: "CSS", path: "/css" },
     { name: "DevOps", path: "/devops" },
-  ];
-
-  const mainNav: NavItem[] = [
-    { name: "Home", path: "/" },
-    // Tutorials will be inserted here in render
-    { name: "Compiler", path: "/compiler" },
-    { name: "Main Website", path: "https://www.techmiyaedtech.com/", external: true },
+    { name: "Git & GitHub", path: "/devops/github" },
+    { name: "Jira", path: "/jira" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
-  const isTutorialActive = tutorials.some(t => isActive(t.path));
+  const isTutorialActive =
+    tutorials.some((t) => isActive(t.path)) ||
+    location.pathname.startsWith("/github") ||
+    location.pathname.startsWith("/devops/github") ||
+    location.pathname.startsWith("/jira");
 
   return (
     <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
@@ -76,10 +77,10 @@ export const Header = () => {
 
             {/* Tutorials Dropdown */}
             <DropdownMenu>
-              <DropdownMenuTrigger className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 outline-none ${isTutorialActive || location.pathname.includes("/python") || location.pathname.includes("/java") || location.pathname.includes("/golang") || location.pathname.includes("/c-programming") || location.pathname.includes("/cpp") || location.pathname.includes("/javascript") || location.pathname.includes("/sql") || location.pathname.includes("/linux") || location.pathname.includes("/flask") || location.pathname.includes("/django") || location.pathname.includes("/html") || location.pathname.includes("/css") || location.pathname.includes("/devops") ? "text-amber-600 bg-amber-50" : "text-gray-600 hover:text-amber-600 hover:bg-amber-50/50"}`}>
+              <DropdownMenuTrigger className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 outline-none ${isTutorialActive || location.pathname.includes("/python") || location.pathname.includes("/java") || location.pathname.includes("/golang") || location.pathname.includes("/c-programming") || location.pathname.includes("/cpp") || location.pathname.includes("/javascript") || location.pathname.includes("/sql") || location.pathname.includes("/linux") || location.pathname.includes("/flask") || location.pathname.includes("/django") || location.pathname.includes("/html") || location.pathname.includes("/css") || location.pathname.includes("/github") || location.pathname.includes("/devops") || location.pathname.includes("/jira") ? "text-amber-600 bg-amber-50" : "text-gray-600 hover:text-amber-600 hover:bg-amber-50/50"}`}>
                 Tutorials <ChevronDown className="w-4 h-4" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-48 bg-white border-gray-100 shadow-lg p-1">
+              <DropdownMenuContent align="start" className="w-56 max-h-[460px] overflow-y-auto bg-white border-gray-100 shadow-lg p-1">
                 {tutorials.map((item) => (
                   <DropdownMenuItem key={item.name} asChild>
                     <Link
@@ -100,8 +101,9 @@ export const Header = () => {
               Compiler
             </Link>
 
+
             <a
-              href="https://www.techmiyaedtech.com/"
+              href={mainSiteUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-gray-600 hover:text-amber-600 hover:bg-amber-50/50"
@@ -159,7 +161,7 @@ export const Header = () => {
                 ))}
               </div>
 
-              <div className="border-t border-gray-100 my-2 pt-2">
+              <div className="border-t border-gray-100 my-2 pt-2 space-y-1">
                 <Link
                   to="/compiler"
                   onClick={() => setIsMenuOpen(false)}
@@ -167,8 +169,9 @@ export const Header = () => {
                 >
                   Compiler
                 </Link>
+
                 <a
-                  href="https://www.techmiyaedtech.com/"
+                  href={mainSiteUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-amber-600"

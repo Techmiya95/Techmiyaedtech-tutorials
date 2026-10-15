@@ -121,4 +121,4 @@ export function motion<T extends React.ElementType = "div">({
 }
 
 // Create a namespace for different components
-motion.div = (props: MotionProps) => <motion {...props} />;
+motion.div = (props: MotionProps) => React.createElement(motion, props);

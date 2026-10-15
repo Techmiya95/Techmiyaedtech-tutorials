@@ -51,8 +51,17 @@ import ShellTutorial from "./pages/ShellTutorial";
 import ShellChapter from "./pages/ShellChapter";
 import MonitoringTutorial from "./pages/MonitoringTutorial";
 import MonitoringChapter from "./pages/MonitoringChapter";
+import JiraTutorial from "./pages/JiraTutorial";
+import JiraChapter from "./pages/JiraChapter";
 import Compiler from "./pages/Compiler";
 import NotFound from "./pages/NotFound";
+import { AssessmentHubPage } from "./pages/AssessmentHubPage";
+import { CourseAssessmentPage } from "./pages/CourseAssessmentPage";
+import { CertificateVerifyPage } from "./pages/CertificateVerifyPage";
+import PsychometricTest from "./pages/PsychometricTest";
+import PsychometricGeneric from "./pages/psychometric/PsychometricGeneric";
+import PsychometricEngineering from "./pages/psychometric/PsychometricEngineering";
+import PsychometricManagement from "./pages/psychometric/PsychometricManagement";
 
 const queryClient = new QueryClient();
 
@@ -106,11 +115,39 @@ const App = () => (
               <Route path="/devops/ansible/:slug" element={<AnsibleChapter />} />
               <Route path="/devops/github" element={<GithubTutorial />} />
               <Route path="/devops/github/:slug" element={<GithubChapter />} />
+              <Route path="/github" element={<GithubTutorial />} />
+              <Route path="/github/:slug" element={<GithubChapter />} />
+              <Route path="/devops/git" element={<GithubTutorial />} />
+              <Route path="/devops/git/:slug" element={<GithubChapter />} />
+              <Route path="/git" element={<GithubTutorial />} />
+              <Route path="/git/:slug" element={<GithubChapter />} />
               <Route path="/devops/shell" element={<ShellTutorial />} />
               <Route path="/devops/shell/:slug" element={<ShellChapter />} />
+              <Route path="/devops/shell-scripting" element={<ShellTutorial />} />
+              <Route path="/devops/shell-scripting/:slug" element={<ShellChapter />} />
               <Route path="/devops/monitoring" element={<MonitoringTutorial />} />
               <Route path="/devops/monitoring/:slug" element={<MonitoringChapter />} />
+              <Route path="/jira" element={<JiraTutorial />} />
+              <Route path="/jira/:slug" element={<JiraChapter />} />
+              <Route path="/devops/jira" element={<JiraTutorial />} />
+              <Route path="/devops/jira/:slug" element={<JiraChapter />} />
               <Route path="/compiler" element={<Compiler />} />
+
+              {/* 50-Mark Course Assessments & Certificates */}
+              <Route path="/assessments" element={<AssessmentHubPage />} />
+              <Route path="/assessment/:courseId" element={<CourseAssessmentPage />} />
+              <Route path="/verify-certificate" element={<CertificateVerifyPage />} />
+              <Route path="/verify" element={<CertificateVerifyPage />} />
+
+              {/* Psychometric Assessments (Career Guidance) */}
+              <Route path="/psychometric-test" element={<PsychometricTest />} />
+              <Route path="/generic" element={<PsychometricGeneric />} />
+              <Route path="/psychometric/generic" element={<PsychometricGeneric />} />
+              <Route path="/engineering" element={<PsychometricEngineering />} />
+              <Route path="/psychometric/engineering" element={<PsychometricEngineering />} />
+              <Route path="/management" element={<PsychometricManagement />} />
+              <Route path="/psychometric/management" element={<PsychometricManagement />} />
+
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

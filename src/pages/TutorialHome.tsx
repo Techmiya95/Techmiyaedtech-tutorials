@@ -171,6 +171,34 @@ const tutorials = [
         level: "Beginner to Advanced",
         keywords: ["css", "css3", "flexbox", "grid", "animations", "responsive", "design", "frontend", "styling"],
     },
+    {
+        title: "Git & GitHub Tutorial",
+        description:
+            "Master Git version control & GitHub collaboration — commits, branches, pull requests, and CI/CD workflows.",
+        icon: "🐙",
+        color: "from-slate-700 to-slate-900",
+        bgLight: "bg-slate-50",
+        borderColor: "border-slate-200",
+        hoverShadow: "hover:shadow-slate-300/50",
+        link: "/devops/github",
+        topics: 7,
+        level: "Beginner to Advanced",
+        keywords: ["git", "github", "version control", "pull requests", "branches", "ci/cd", "commits", "devops"],
+    },
+    {
+        title: "Jira Tutorial",
+        description:
+            "Master Agile project management — Scrum and Kanban boards, sprints, issues, workflows, JQL, and dashboards.",
+        icon: "📋",
+        color: "from-blue-600 to-indigo-700",
+        bgLight: "bg-blue-50",
+        borderColor: "border-blue-200",
+        hoverShadow: "hover:shadow-blue-200/50",
+        link: "/jira",
+        topics: 8,
+        level: "Beginner to Professional",
+        keywords: ["jira", "agile", "scrum", "kanban", "sprints", "jql", "workflows", "atlassian", "epics", "backlog", "devops"],
+    },
 ];
 
 const stats = [
@@ -538,6 +566,37 @@ const TutorialHome = () => {
                                 </p>
                             </div>
                         ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* 50-Mark Certification & Assessments Banner */}
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div className="bg-gradient-to-br from-amber-50 via-white to-blue-50 border-2 border-amber-200/80 rounded-3xl p-8 sm:p-12 shadow-sm flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div className="space-y-3 text-center md:text-left max-w-2xl">
+                        <span className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+                            <Award className="w-4 h-4 text-amber-600" /> Standardized Skill Validation
+                        </span>
+                        <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
+                            Test Your Knowledge & Earn Course Certificates
+                        </h2>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                            Take our official 50-mark examinations in Git & GitHub, Python, C, and DevOps. Answer 25 comprehensive multiple-choice questions, meet the minimum passing benchmark of 30/50, and download your official Techmiya certificate of completion.
+                        </p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+                        <Link
+                            to="/assessments"
+                            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold px-6 py-3 rounded-xl shadow-md transition-all text-sm"
+                        >
+                            View Assessments (50 Marks) →
+                        </Link>
+                        <Link
+                            to="/verify-certificate"
+                            className="inline-flex items-center justify-center gap-2 bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 font-semibold px-5 py-3 rounded-xl transition-all text-sm"
+                        >
+                            Verify a Certificate
+                        </Link>
                     </div>
                 </div>
             </section>

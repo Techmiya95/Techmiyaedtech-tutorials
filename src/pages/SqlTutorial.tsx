@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { BookOpen, ChevronRight, Home, Database } from "lucide-react";
 import { allSqlChapters } from "../data/sqlIndex";
+import { CourseOverviewAssessmentNotification } from "../components/CourseProgressControls";
 
 const SqlTutorial = () => {
     return (
@@ -93,6 +94,8 @@ const SqlTutorial = () => {
                         </Link>
                     ))}
                 </div>
+
+                <CourseOverviewAssessmentNotification courseId="sql" chapters={allSqlChapters} />
             </section>
         </div>
     );

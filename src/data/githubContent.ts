@@ -10,65 +10,96 @@ export const githubChapters: Chapter[] = [
             {
                 heading: "What is Version Control?",
                 content: "Version Control is a system that records changes to files over time so you can recall specific versions later. It's essential for:\n\n• **Collaboration** — Multiple developers can work on the same project simultaneously.\n• **History** — Every change is tracked with who made it, when, and why.\n• **Rollback** — Easily revert to a previous working version if something breaks.\n• **Branching** — Experiment with new features without affecting the main codebase.\n\n**Types:**\n• **Centralized VCS** (CVCS) — One central server (e.g., SVN). Single point of failure.\n• **Distributed VCS** (DVCS) — Every developer has a full copy of the repository (e.g., Git). No single point of failure.",
-                note: "Git is a Distributed VCS — even if the server goes down, every developer has a complete backup."
+                note: "Git is a Distributed VCS — even if the server goes down, every developer has a complete backup.",
+                objectives: [
+                    "Distinguish between Centralized (CVCS) and Distributed (DVCS) systems",
+                    "Understand how Git tracks immutable snapshot trees rather than simple file diffs",
+                    "Set up global developer credentials on Windows, macOS, or Linux",
+                ],
+                takeaways: [
+                    "Every cloned Git repository contains the full project history locally.",
+                    "Commits in Git are cryptographically hashed using SHA-1 / SHA-256.",
+                ],
             },
             {
                 heading: "Git vs GitHub",
-                content: "**Git** is a version control system — a tool you install on your computer to track changes.\n**GitHub** is a hosting platform for Git repositories — it adds collaboration features like Pull Requests, Issues, and Actions.\n\n| Feature | Git | GitHub |\n|---|---|---|\n| **Type** | CLI tool (local) | Cloud platform (remote) |\n| **Installed** | On your computer | Accessed via browser/API |\n| **Purpose** | Track changes | Collaborate & host code |\n| **Alternatives** | — | GitLab, Bitbucket |",
-                note: "You can use Git without GitHub, but you can't use GitHub without Git."
+                content: "**Git** is a version control system — a tool you install on your computer to track changes.\n**GitHub** is a cloud hosting platform for Git repositories — it adds collaboration features like Pull Requests, Issues, Actions, and team access control.\n\n| Feature | Git | GitHub |\n|---|---|---|\n| **Type** | CLI tool (local) | Cloud platform (remote) |\n| **Installed** | On your computer | Accessed via browser/API |\n| **Purpose** | Track changes | Collaborate & host code |\n| **Alternatives** | Mercurial, SVN | GitLab, Bitbucket |",
+                note: "You can use Git without GitHub, but you can't use GitHub without Git.",
+                explanation: "Think of Git as the engine running offline on your local machine, and GitHub as the remote hub where teams share and synchronize their work.",
             },
             {
                 heading: "Installing & Configuring Git",
                 content: "Install Git and set up your identity before making your first commit.",
                 code: `# Install Git
-# Ubuntu/Debian
-sudo apt install git -y
-
-# macOS
-brew install git
-
+# Ubuntu/Debian: sudo apt install git -y
+# macOS: brew install git
 # Windows: Download from https://git-scm.com/downloads
 
 # Verify installation
 git --version
 
 # Configure your identity (required before first commit)
-git config --global user.name "Joel Fernando"
-git config --global user.email "joel@techmiya.com"
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
 
 # Set default branch name to 'main'
 git config --global init.defaultBranch main
 
-# Set VS Code as default editor
-git config --global core.editor "code --wait"
-
-# View all configuration
-git config --list`,
-                codeTitle: "git-setup.sh"
+# Verify current configuration
+git config --list --show-origin`,
+                codeTitle: "git-setup.sh",
+                output: `git version 2.44.0
+file:/home/user/.gitconfig	user.name=Your Name
+file:/home/user/.gitconfig	user.email=your.email@example.com
+file:/home/user/.gitconfig	init.defaultbranch=main`,
+                explanation: "Git embeds your name and email into every commit hash metadata. Without this configuration, Git will block commits or use system defaults.",
+                commonMistakes: [
+                    {
+                        mistake: "Forgetting to set global user credentials before committing.",
+                        fix: "Run 'git config --global user.name \"Name\"' and 'git config --global user.email \"email\"' immediately after installation.",
+                    },
+                    {
+                        mistake: "Using mismatched corporate and personal email addresses on GitHub.",
+                        fix: "Verify configured email matches your registered verified GitHub primary/secondary email.",
+                    },
+                ],
+                exercise: {
+                    task: "Run 'git --version' and 'git config --list' on your terminal to confirm Git is correctly identified.",
+                    hint: "If git is not found on Windows, ensure Git is added to your system PATH environment variable.",
+                },
             },
             {
-                heading: "Creating a Repository",
-                content: "A repository (repo) is a directory tracked by Git. You can initialize a new repo or clone an existing one.",
-                code: `# Initialize a new Git repository
-mkdir my-project && cd my-project
+                heading: "Creating & Initializing a Repository",
+                content: "A repository (repo) is a directory tracked by Git. You can initialize a new repository locally or clone an existing remote repository.",
+                code: `# 1. Create a project directory and enter it
+mkdir techmiya-demo && cd techmiya-demo
+
+# 2. Initialize a Git repository
 git init
-# Output: Initialized empty Git repository in /home/user/my-project/.git/
 
-# Clone an existing repository from GitHub
-git clone https://github.com/username/repo-name.git
+# 3. Create an initial file
+echo "# Techmiya Demo Project" > README.md
 
-# Clone into a specific folder
-git clone https://github.com/username/repo-name.git my-folder
-
-# Clone a specific branch
-git clone -b develop https://github.com/username/repo-name.git
-
-# Check repo status
+# 4. Check status
 git status`,
                 codeTitle: "create-repo.sh",
-                note: "The .git folder contains all Git metadata and history. Never delete it unless you want to remove version control."
-            }
-        ]
+                output: `Initialized empty Git repository in /home/user/techmiya-demo/.git/
+On branch main
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	README.md
+
+nothing added to commit but untracked files present (use "git add" to track)`,
+                note: "The hidden .git directory holds the commit database, reflogs, and config. Never delete .git unless you intend to detach the directory from version control.",
+                takeaways: [
+                    "'git init' creates the hidden .git directory.",
+                    "'git status' is your continuous compass to see working tree state.",
+                ],
+            },
+        ],
     },
     {
         id: 2,
@@ -77,41 +108,57 @@ git status`,
         description: "The daily Git workflow: staging, committing, pushing, and pulling changes.",
         sections: [
             {
-                heading: "The Git Workflow",
-                content: "Git has three main areas:\n\n1. **Working Directory** — Where you edit files.\n2. **Staging Area (Index)** — Where you prepare changes for a commit.\n3. **Repository (.git)** — Where committed snapshots are stored.\n\nThe typical workflow:\n`Edit → Stage (git add) → Commit (git commit) → Push (git push)`",
-                note: "Think of staging as a 'draft' area — you choose exactly what goes into each commit."
+                heading: "The Three Trees of Git",
+                content: "Git manages changes across three distinct areas:\n\n1. **Working Tree** — Your sandbox directory where you edit, add, and remove code files.\n2. **Staging Area (Index)** — The intermediate staging area where you craft atomic commits.\n3. **Local Repository (.git)** — The permanent database of committed snapshots.\n\nThe essential daily lifecycle:\n`Edit File → git add (Stage) → git commit (Snapshot) → git push (Sync Remote)`",
+                note: "Think of staging as packing a shipping box: you select exactly the items you want before sealing and labeling the box.",
+                objectives: [
+                    "Master staging individual files vs entire working trees",
+                    "Write clear, conventional commit messages",
+                    "Synchronize local branches with remote GitHub repositories",
+                ],
             },
             {
-                heading: "Staging & Committing",
-                content: "Stage specific files or all changes, then save them with a descriptive commit message.",
-                code: `# Check what files have changed
-git status
+                heading: "Staging and Committing Changes",
+                content: "Stage specific files or all modifications, then commit them with a descriptive imperative message.",
+                code: `# Stage a single file
+git add README.md
 
-# Show detailed differences
-git diff
-
-# Stage a specific file
-git add index.html
-
-# Stage multiple files
-git add src/app.js src/styles.css
-
-# Stage all changes (new, modified, deleted)
+# Stage all modified and new files
 git add .
 
-# Unstage a file (remove from staging)
-git restore --staged index.html
+# Check staged vs unstaged files
+git status
 
-# Commit with a message
-git commit -m "feat: add user login form"
+# Commit with a meaningful message
+git commit -m "docs: add initial project README"
 
-# Commit with detailed message (opens editor)
-git commit
-
-# Add and commit in one step (tracked files only)
-git commit -am "fix: resolve button alignment"`,
+# View commit history
+git log --oneline -n 3`,
                 codeTitle: "stage-commit.sh",
-                note: "Follow Conventional Commits: feat:, fix:, docs:, chore:, refactor:, test:, style:"
+                output: `[main (root-commit) 7a9e2f1] docs: add initial project README
+ 1 file changed, 1 insertion(+)
+ create mode 100644 README.md
+
+7a9e2f1 (HEAD -> main) docs: add initial project README`,
+                explanation: "Running 'git add' calculates the SHA-1 blob and updates the index. 'git commit' records a tree object and commit metadata pointing to the previous commit.",
+                commonMistakes: [
+                    {
+                        mistake: "Using vague commit messages like 'fixed stuff' or 'update'.",
+                        fix: "Follow conventional commits: 'feat: add user login', 'fix: resolve navbar overflow', or 'docs: update readme'.",
+                    },
+                    {
+                        mistake: "Accidentally staging credentials (.env) or dependencies (node_modules).",
+                        fix: "Always add sensitive files to a '.gitignore' file BEFORE running 'git add .'.",
+                    },
+                ],
+                exercise: {
+                    task: "Create a file named 'app.js', stage it, commit it with message 'feat: init app', and view your commit in 'git log'.",
+                    hint: "echo \"console.log('Techmiya');\" > app.js && git add app.js && git commit -m \"feat: init app\" && git log --oneline",
+                },
+                takeaways: [
+                    "Atomic commits: make each commit address a single logical change.",
+                    "'git log --oneline' provides a fast readable timeline of past commits.",
+                ],
             },
             {
                 heading: "Pushing & Pulling",

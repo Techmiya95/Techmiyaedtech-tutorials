@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { BookOpen, ChevronRight, Home } from "lucide-react";
 import { githubChapters } from "../data/githubContent";
+import { CourseOverviewAssessmentNotification } from "../components/CourseProgressControls";
 
 const GithubTutorial = () => {
     return (
@@ -73,6 +74,8 @@ const GithubTutorial = () => {
                         </Link>
                     ))}
                 </div>
+
+                <CourseOverviewAssessmentNotification courseId="github" chapters={githubChapters} />
             </section>
         </div>
     );
