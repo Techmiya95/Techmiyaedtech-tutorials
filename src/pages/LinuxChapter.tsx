@@ -1,17 +1,10 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ChevronRight, ChevronLeft, Home, BookOpen, Copy, Check, AlertTriangle, Lightbulb, Menu, X, FileCode, Terminal, Award } from "lucide-react";
+import { ChevronRight, ChevronLeft, Home, BookOpen, Copy, Check, AlertTriangle, Lightbulb, Menu, X, FileCode, Terminal } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { linuxChapters } from "../data/linuxContent";
 import type { Section } from "../data/javaContent";
-import { useCourseProgress } from "../lib/courseProgress";
-import {
-  LessonCompletionButton,
-  CourseCertificationBanner,
-  CourseSidebarBadge,
-  CourseSidebarBottomNotification,
-} from "../components/CourseProgressControls";
 
 // Custom theme based on vscDarkPlus with tweaks
 const customStyle = {
@@ -149,18 +142,6 @@ const LinuxChapter = () => {
     const prevChapter = chapterIndex > 0 ? linuxChapters[chapterIndex - 1] : null;
     const nextChapter = chapterIndex < linuxChapters.length - 1 ? linuxChapters[chapterIndex + 1] : null;
 
-    const courseUnits = linuxChapters.map((ch) => ({
-        id: ch.id,
-        slug: ch.slug,
-        title: ch.title,
-    }));
-
-    const { completedSlugs, isCurrentCompleted, eligibility, toggleComplete } = useCourseProgress(
-        "linux",
-        courseUnits,
-        slug
-    );
-
     useEffect(() => {
         window.scrollTo(0, 0);
         setSidebarOpen(false);
@@ -207,43 +188,28 @@ const LinuxChapter = () => {
                 {/* Sidebar */}
                 <aside className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 fixed lg:sticky top-16 left-0 z-40 w-72 h-[calc(100vh-4rem)] bg-white lg:bg-transparent border-r border-gray-100 overflow-y-auto transition-transform duration-300 lg:block shrink-0`}>
                     <div className="p-4">
-                        <div className="mb-4 pb-3 border-b border-gray-100">
-                            <CourseSidebarBadge eligibility={eligibility} />
-                        </div>
                         <Link to="/linux" className="flex items-center gap-2 text-sm font-semibold text-slate-600 mb-4 hover:text-slate-700">
                             <BookOpen className="w-4 h-4" /> 🐧 Linux Tutorial
                         </Link>
                         <nav className="space-y-0.5">
-                            {linuxChapters.map((ch) => {
-                                const isDone = completedSlugs.includes(ch.slug);
-                                const isCurrent = ch.slug === slug;
-                                return (
-                                    <Link
-                                        key={ch.id}
-                                        to={`/linux/${ch.slug}`}
-                                        onClick={() => setSidebarOpen(false)}
-                                        className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all duration-150 ${isCurrent
-                                            ? "bg-slate-50 text-slate-700 font-semibold border border-slate-200"
-                                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                                            }`}
-                                    >
-                                        <div className="flex items-center gap-2.5 truncate">
-                                            <span className={`w-6 h-6 rounded text-xs flex items-center justify-center font-bold shrink-0 ${isCurrent ? "bg-slate-600 text-white" : isDone ? "bg-emerald-100 text-emerald-800" : "bg-gray-100 text-gray-500"
-                                                }`}>
-                                                {isDone ? "✓" : ch.id}
-                                            </span>
-                                            <span className="truncate">{ch.title}</span>
-                                        </div>
-                                        {isDone && (
-                                            <span className="text-[10px] text-emerald-600 font-bold shrink-0 ml-1">
-                                                Done
-                                            </span>
-                                        )}
-                                    </Link>
-                                );
-                            })}
+                            {linuxChapters.map((ch) => (
+                                <Link
+                                    key={ch.id}
+                                    to={`/linux/${ch.slug}`}
+                                    onClick={() => setSidebarOpen(false)}
+                                    className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-150 ${ch.slug === slug
+                                        ? "bg-slate-50 text-slate-700 font-semibold border border-slate-200"
+                                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                                        }`}
+                                >
+                                    <span className={`w-6 h-6 rounded text-xs flex items-center justify-center font-bold shrink-0 ${ch.slug === slug ? "bg-slate-600 text-white" : "bg-gray-100 text-gray-500"
+                                        }`}>
+                                        {ch.id}
+                                    </span>
+                                    <span className="truncate">{ch.title}</span>
+                                </Link>
+                            ))}
                         </nav>
-                        <CourseSidebarBottomNotification eligibility={eligibility} />
                     </div>
                 </aside>
 
@@ -267,21 +233,6 @@ const LinuxChapter = () => {
                     {chapter.sections.map((section, i) => (
                         <SectionContent key={i} section={section} />
                     ))}
-
-                    {/* Lesson Completion Status */}
-                    <div className="mt-10">
-                        <LessonCompletionButton
-                            isCompleted={isCurrentCompleted}
-                            onToggle={() => toggleComplete()}
-                            unitTitle={chapter.title}
-                        />
-                    </div>
-
-                    {/* Certification Status & Callout */}
-                    <CourseCertificationBanner
-                        eligibility={eligibility}
-                        courseBasePath="/linux"
-                    />
 
                     {/* Navigation */}
                     <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
@@ -311,14 +262,13 @@ const LinuxChapter = () => {
                             </Link>
                         ) : (
                             <Link
-                                to="/assessment/linux"
-                                className="flex items-center justify-end gap-3 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold hover:shadow-md transition-all text-right"
+                                to="/linux"
+                                className="flex items-center justify-end gap-3 px-5 py-3 rounded-xl bg-gradient-to-r from-slate-600 to-stone-600 text-white hover:shadow-md transition-all"
                             >
-                                <div>
-                                    <p className="text-xs text-amber-950 font-semibold">Course Complete!</p>
-                                    <p className="text-sm">Start 50-Mark Assessment →</p>
+                                <div className="text-right">
+                                    <p className="text-xs text-slate-200">Completed!</p>
+                                    <p className="font-semibold">Back to Linux Tutorial</p>
                                 </div>
-                                <Award className="w-5 h-5 text-slate-950" />
                             </Link>
                         )}
                     </div>

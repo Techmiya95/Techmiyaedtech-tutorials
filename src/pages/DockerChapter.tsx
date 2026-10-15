@@ -1,17 +1,10 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ChevronRight, ChevronLeft, Home, BookOpen, Copy, Check, AlertTriangle, Lightbulb, Menu, X, FileCode, Terminal, Award } from "lucide-react";
+import { ChevronRight, ChevronLeft, Home, BookOpen, Copy, Check, AlertTriangle, Lightbulb, Menu, X, FileCode, Terminal } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { dockerChapters } from "../data/dockerContent";
 import type { Section } from "../data/javaContent";
-import { useCourseProgress } from "../lib/courseProgress";
-import {
-  LessonCompletionButton,
-  CourseCertificationBanner,
-  CourseSidebarBadge,
-  CourseSidebarBottomNotification,
-} from "../components/CourseProgressControls";
 
 const customStyle = {
     ...vscDarkPlus,
@@ -98,18 +91,6 @@ const DockerChapter = () => {
     const prevChapter = chapterIndex > 0 ? dockerChapters[chapterIndex - 1] : null;
     const nextChapter = chapterIndex < dockerChapters.length - 1 ? dockerChapters[chapterIndex + 1] : null;
 
-    const courseUnits = dockerChapters.map((ch) => ({
-        id: ch.id,
-        slug: ch.slug,
-        title: ch.title,
-    }));
-
-    const { completedSlugs, isCurrentCompleted, eligibility, toggleComplete } = useCourseProgress(
-        "devops",
-        courseUnits,
-        slug
-    );
-
     useEffect(() => { window.scrollTo(0, 0); setSidebarOpen(false); }, [slug]);
 
     if (!chapter) return <div>Chapter not found</div>;
@@ -132,29 +113,14 @@ const DockerChapter = () => {
             <div className="max-w-7xl mx-auto flex">
                 <aside className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 fixed lg:sticky top-16 left-0 z-40 w-72 h-[calc(100vh-4rem)] bg-white border-r border-gray-100 overflow-y-auto transition-transform lg:block`}>
                     <div className="p-4">
-                        <div className="mb-4 pb-3 border-b border-gray-100">
-                            <CourseSidebarBadge eligibility={eligibility} />
-                        </div>
                         <nav className="space-y-0.5">
-                            {dockerChapters.map((ch) => {
-                                const isDone = completedSlugs.includes(ch.slug);
-                                const isCurrent = ch.slug === slug;
-                                return (
-                                    <Link key={ch.id} to={`/devops/docker/${ch.slug}`} className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm ${isCurrent ? "bg-blue-50 text-blue-800 font-semibold" : "text-gray-600 hover:bg-gray-50"}`}>
-                                        <div className="flex items-center gap-2.5 truncate">
-                                            <span className={`w-6 h-6 rounded text-xs flex items-center justify-center font-bold ${isCurrent ? "bg-blue-600 text-white" : isDone ? "bg-emerald-100 text-emerald-800" : "bg-gray-100"}`}>{isDone ? "✓" : ch.id}</span>
-                                            <span className="truncate">{ch.title}</span>
-                                        </div>
-                                        {isDone && (
-                                            <span className="text-[10px] text-emerald-600 font-bold shrink-0 ml-1">
-                                                Done
-                                            </span>
-                                        )}
-                                    </Link>
-                                );
-                            })}
+                            {dockerChapters.map((ch) => (
+                                <Link key={ch.id} to={`/devops/docker/${ch.slug}`} className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm ${ch.slug === slug ? "bg-blue-50 text-blue-800 font-semibold" : "text-gray-600 hover:bg-gray-50"}`}>
+                                    <span className={`w-6 h-6 rounded text-xs flex items-center justify-center font-bold ${ch.slug === slug ? "bg-blue-600 text-white" : "bg-gray-100"}`}>{ch.id}</span>
+                                    <span className="truncate">{ch.title}</span>
+                                </Link>
+                            ))}
                         </nav>
-                        <CourseSidebarBottomNotification eligibility={eligibility} />
                     </div>
                 </aside>
                 <main className="flex-1 min-w-0 px-4 sm:px-8 lg:px-12 py-8 lg:py-10">
@@ -164,37 +130,15 @@ const DockerChapter = () => {
                         <p className="mt-2 text-gray-500">{chapter.description}</p>
                     </div>
                     {chapter.sections.map((section, i) => <SectionContent key={i} section={section} />)}
-
-                    {/* Lesson Completion Status */}
-                    <div className="mt-10">
-                        <LessonCompletionButton
-                            isCompleted={isCurrentCompleted}
-                            onToggle={() => toggleComplete()}
-                            unitTitle={chapter.title}
-                        />
-                    </div>
-
-                    {/* Certification Status & Callout */}
-                    <CourseCertificationBanner
-                        eligibility={eligibility}
-                        courseBasePath="/devops/docker"
-                    />
                     <div className="mt-12 pt-8 border-t border-gray-200 flex justify-between gap-4">
                         {prevChapter && <Link to={`/devops/docker/${prevChapter.slug}`} className="flex items-center gap-3 px-5 py-3 rounded-xl border border-gray-200 hover:border-blue-300 transition-all">
                             <ChevronLeft className="w-5 h-5 text-gray-400" />
                             <div><p className="text-xs text-gray-400">Previous</p><p className="font-semibold text-gray-700">{prevChapter.title}</p></div>
                         </Link>}
-                        {nextChapter ? (
-                            <Link to={`/devops/docker/${nextChapter.slug}`} className="flex items-center justify-end gap-3 px-5 py-3 rounded-xl border border-gray-200 hover:border-blue-300 transition-all text-right">
-                                <div><p className="text-xs text-gray-400">Next</p><p className="font-semibold text-gray-700">{nextChapter.title}</p></div>
-                                <ChevronRight className="w-5 h-5 text-gray-400" />
-                            </Link>
-                        ) : (
-                            <Link to="/assessment/devops" className="flex items-center justify-end gap-3 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold hover:shadow-md transition-all text-right">
-                                <div><p className="text-xs text-amber-950 font-semibold">Course Complete!</p><p className="text-sm">Start 50-Mark Assessment →</p></div>
-                                <Award className="w-5 h-5 text-slate-950" />
-                            </Link>
-                        )}
+                        {nextChapter && <Link to={`/devops/docker/${nextChapter.slug}`} className="flex items-center justify-end gap-3 px-5 py-3 rounded-xl border border-gray-200 hover:border-blue-300 transition-all text-right">
+                            <div><p className="text-xs text-gray-400">Next</p><p className="font-semibold text-gray-700">{nextChapter.title}</p></div>
+                            <ChevronRight className="w-5 h-5 text-gray-400" />
+                        </Link>}
                     </div>
                 </main>
             </div>

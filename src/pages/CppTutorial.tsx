@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { BookOpen, ChevronRight, Home } from "lucide-react";
 import { allCppChapters } from "../data/cppIndex";
-import { CourseOverviewAssessmentNotification } from "../components/CourseProgressControls";
 
 const CppTutorial = () => {
     return (
@@ -95,7 +94,10 @@ const CppTutorial = () => {
                     ))}
                 </div>
 
-                <CourseOverviewAssessmentNotification courseId="cpp" chapters={allCppChapters} />
+                <div className="mt-8 bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-xl p-6 text-center">
+                    <p className="text-indigo-800 font-semibold">🚀 Advanced modules added regularly!</p>
+                    <p className="text-indigo-600 text-sm mt-1">Check back for new content on System Design and Real-time Systems.</p>
+                </div>
             </section>
         </div>
     );

@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { BookOpen, ChevronRight, Home } from "lucide-react";
 import { dockerChapters } from "../data/dockerContent";
-import { CourseOverviewAssessmentNotification } from "../components/CourseProgressControls";
 
 const DockerTutorial = () => {
     return (
@@ -74,8 +73,6 @@ const DockerTutorial = () => {
                         </Link>
                     ))}
                 </div>
-
-                <CourseOverviewAssessmentNotification courseId="devops" chapters={dockerChapters} />
             </section>
         </div>
     );

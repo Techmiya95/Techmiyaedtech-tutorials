@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { BookOpen, ChevronRight, Home } from "lucide-react";
 import { htmlChapters } from "../data/htmlContent";
-import { CourseOverviewAssessmentNotification } from "../components/CourseProgressControls";
 
 const HtmlTutorial = () => {
     return (
@@ -95,7 +94,10 @@ const HtmlTutorial = () => {
                     ))}
                 </div>
 
-                <CourseOverviewAssessmentNotification courseId="html" chapters={htmlChapters} />
+                <div className="mt-8 bg-gradient-to-r from-orange-50 to-red-50 border border-orange-100 rounded-xl p-6 text-center">
+                    <p className="text-orange-800 font-semibold">🚀 Professional Development Track</p>
+                    <p className="text-orange-600 text-sm mt-1">These topics are designed to meet current industry standards for modern web apps.</p>
+                </div>
             </section>
         </div>
     );

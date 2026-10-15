@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { BookOpen, ChevronRight, Home, Globe } from "lucide-react";
 import { allDjangoChapters } from "../data/djangoIndex";
-import { CourseOverviewAssessmentNotification } from "../components/CourseProgressControls";
 
 const DjangoTutorial = () => {
     return (
@@ -94,8 +93,6 @@ const DjangoTutorial = () => {
                         </Link>
                     ))}
                 </div>
-
-                <CourseOverviewAssessmentNotification courseId="django" chapters={allDjangoChapters} />
             </section>
         </div>
     );

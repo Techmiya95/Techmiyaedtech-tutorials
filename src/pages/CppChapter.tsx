@@ -1,17 +1,10 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ChevronRight, ChevronLeft, Home, BookOpen, Copy, Check, AlertTriangle, Lightbulb, Menu, X, FileCode, Terminal, Award } from "lucide-react";
+import { ChevronRight, ChevronLeft, Home, BookOpen, Copy, Check, AlertTriangle, Lightbulb, Menu, X, FileCode, Terminal } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { allCppChapters } from "../data/cppIndex";
 import type { Section } from "../data/javaContent";
-import { useCourseProgress } from "../lib/courseProgress";
-import {
-  LessonCompletionButton,
-  CourseCertificationBanner,
-  CourseSidebarBadge,
-  CourseSidebarBottomNotification,
-} from "../components/CourseProgressControls";
 
 const customStyle = {
     ...vscDarkPlus,
@@ -111,18 +104,6 @@ const CppChapter = () => {
     const prevChapter = chapterIndex > 0 ? allCppChapters[chapterIndex - 1] : null;
     const nextChapter = chapterIndex < allCppChapters.length - 1 ? allCppChapters[chapterIndex + 1] : null;
 
-    const courseUnits = allCppChapters.map((ch) => ({
-        id: ch.id,
-        slug: ch.slug,
-        title: ch.title,
-    }));
-
-    const { completedSlugs, isCurrentCompleted, eligibility, toggleComplete } = useCourseProgress(
-        "cpp",
-        courseUnits,
-        slug
-    );
-
     useEffect(() => { window.scrollTo(0, 0); setSidebarOpen(false); }, [slug]);
 
     if (!chapter) {
@@ -158,33 +139,18 @@ const CppChapter = () => {
 
                 <aside className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 fixed lg:sticky top-16 left-0 z-40 w-72 h-[calc(100vh-4rem)] bg-white lg:bg-transparent border-r border-gray-100 overflow-y-auto transition-transform duration-300 lg:block shrink-0`}>
                     <div className="p-4">
-                        <div className="mb-4 pb-3 border-b border-gray-100">
-                            <CourseSidebarBadge eligibility={eligibility} />
-                        </div>
                         <Link to="/cpp" className="flex items-center gap-2 text-sm font-semibold text-indigo-600 mb-4 hover:text-indigo-700">
                             <BookOpen className="w-4 h-4" /> 🚀 C++ Tutorial
                         </Link>
                         <nav className="space-y-0.5">
-                            {allCppChapters.map((ch) => {
-                                const isDone = completedSlugs.includes(ch.slug);
-                                const isCurrent = ch.slug === slug;
-                                return (
-                                    <Link key={ch.id} to={`/cpp/${ch.slug}`} onClick={() => setSidebarOpen(false)}
-                                        className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all duration-150 ${isCurrent ? "bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}>
-                                        <div className="flex items-center gap-2.5 truncate">
-                                            <span className={`w-6 h-6 rounded text-xs flex items-center justify-center font-bold shrink-0 ${isCurrent ? "bg-indigo-600 text-white" : isDone ? "bg-emerald-100 text-emerald-800" : "bg-gray-100 text-gray-500"}`}>{isDone ? "✓" : ch.id}</span>
-                                            <span className="truncate">{ch.title}</span>
-                                        </div>
-                                        {isDone && (
-                                            <span className="text-[10px] text-emerald-600 font-bold shrink-0 ml-1">
-                                                Done
-                                            </span>
-                                        )}
-                                    </Link>
-                                );
-                            })}
+                            {allCppChapters.map((ch) => (
+                                <Link key={ch.id} to={`/cpp/${ch.slug}`} onClick={() => setSidebarOpen(false)}
+                                    className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-150 ${ch.slug === slug ? "bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}>
+                                    <span className={`w-6 h-6 rounded text-xs flex items-center justify-center font-bold shrink-0 ${ch.slug === slug ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-500"}`}>{ch.id}</span>
+                                    <span className="truncate">{ch.title}</span>
+                                </Link>
+                            ))}
                         </nav>
-                        <CourseSidebarBottomNotification eligibility={eligibility} />
                     </div>
                 </aside>
 
@@ -199,21 +165,6 @@ const CppChapter = () => {
 
                     {chapter.sections.map((section, i) => <SectionContent key={i} section={section} />)}
 
-                    {/* Lesson Completion Status */}
-                    <div className="mt-10">
-                        <LessonCompletionButton
-                            isCompleted={isCurrentCompleted}
-                            onToggle={() => toggleComplete()}
-                            unitTitle={chapter.title}
-                        />
-                    </div>
-
-                    {/* Certification Status & Callout */}
-                    <CourseCertificationBanner
-                        eligibility={eligibility}
-                        courseBasePath="/cpp"
-                    />
-
                     <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
                         {prevChapter ? (
                             <Link to={`/cpp/${prevChapter.slug}`} className="flex items-center gap-3 px-5 py-3 rounded-xl border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all group">
@@ -227,9 +178,8 @@ const CppChapter = () => {
                                 <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-indigo-500" />
                             </Link>
                         ) : (
-                            <Link to="/assessment/cpp" className="flex items-center justify-end gap-3 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold hover:shadow-md transition-all text-right">
-                                <div><p className="text-xs text-amber-950 font-semibold">Course Complete!</p><p className="text-sm">Start 50-Mark Assessment →</p></div>
-                                <Award className="w-5 h-5 text-slate-950" />
+                            <Link to="/cpp" className="flex items-center justify-end gap-3 px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-md transition-all">
+                                <div className="text-right"><p className="text-xs text-indigo-200">Completed!</p><p className="font-semibold">Back to C++ Tutorial</p></div>
                             </Link>
                         )}
                     </div>

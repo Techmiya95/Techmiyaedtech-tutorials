@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { BookOpen, ChevronRight, Home } from "lucide-react";
 import { cssChapters } from "../data/cssContent";
-import { CourseOverviewAssessmentNotification } from "../components/CourseProgressControls";
 
 const CssTutorial = () => {
     return (
@@ -95,7 +94,10 @@ const CssTutorial = () => {
                     ))}
                 </div>
 
-                <CourseOverviewAssessmentNotification courseId="css" chapters={cssChapters} />
+                <div className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-6 text-center">
+                    <p className="text-blue-800 font-semibold">🚀 Industry Standard Patterns</p>
+                    <p className="text-blue-600 text-sm mt-1">These topics are structured to help you build maintainable, scalable, and responsive frontend architectures.</p>
+                </div>
             </section>
         </div>
     );
